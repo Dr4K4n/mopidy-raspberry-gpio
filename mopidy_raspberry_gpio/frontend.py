@@ -2,6 +2,10 @@ import logging
 
 import pykka
 from mopidy import core
+from mopidy import models
+
+#from mopidy_spotify import playback
+#from mopidy_spotify import backend
 
 from .rotencoder import RotEncoder
 
@@ -115,3 +119,39 @@ class RaspberryGPIOFrontend(pykka.ThreadingActor, core.CoreListener):
         volume -= step
         volume = max(volume, 0)
         self.core.mixer.set_volume(volume)
+
+    def playlist(self, uri_playlist):
+        playlist = self.core.playlists.lookup(uri=uri_playlist).get()
+
+        logger.info("Clearing Tracklist")
+        self.core.tracklist.clear()
+
+        logger.info("Trying to add Track to Tracklist")
+        self.spotify_track_list = self.core.tracklist.add(playlist.tracks).get()
+
+        logger.info("Trying to play Tracklist")
+        self.core.playback.play()
+
+    def handle_playlist1(self, config):
+        logger.info("Got playlist1 event")
+        self.playlist("spotify:user:Dr4K4n:playlist:3tRcdPc0rQQx4lor7KKdqF")
+
+    def handle_playlist2(self, config):
+        logger.info("Got playlist2 event")
+        self.playlist("spotify:user:Dr4K4n:playlist:2K3l0Gohq1XnJATNdj9gA2")
+
+    def handle_playlist3(self, config):
+        logger.info("Got playlist3 event")
+        self.playlist("spotify:user:Dr4K4n:playlist:7BrmmunjWOx2tIpSZIieGM")
+
+    def handle_playlist4(self, config):
+        logger.info("Got playlist4 event")
+        self.playlist("spotify:user:Dr4K4n:playlist:1vwbA2ygoa4Eu58OpnWp5I")
+
+    def handle_playlist5(self, config):
+        logger.info("Got playlist5 event")
+        self.playlist("spotify:user:Dr4K4n:playlist:75Vfaj1JdLiV61IQ1u3sKQ")
+
+    def handle_playlist6(self, config):
+        logger.info("Got playlist6 event")
+        self.playlist("spotify:user:Dr4K4n:playlist:0taF2SrZ4pEm59K7g4QcO8")
